@@ -88,7 +88,7 @@ body.fade-out { opacity: 0; }
   font-style: italic; margin-bottom: 80px;
 }
 
-/* ── DESKTOP Glass Boxes ── */
+/* ── Glass Boxes (shared by desktop & mobile) ── */
 .glass-container {
   position: relative; width: 100%; max-width: 1200px;
   margin: 0 auto; display: flex;
@@ -144,14 +144,11 @@ footer a:hover { text-decoration: underline; }
 }
 
 /* ══════════════════════════════════════════
-   MOBILE  ≤ 900px  — pills + expand system
+   MOBILE  ≤ 900px  — same glass box, centered
    ══════════════════════════════════════════ */
 @media (max-width: 900px) {
 
-  html, body { overflow: hidden; height: 100%; }
-
-  /* Hide desktop glass container completely */
-  .glass-container { display: none; }
+  html, body { overflow-y: auto; height: auto; min-height: 100%; }
 
   /* Navbar: keep About and Blogs visible */
   .navbar-menu { gap: 10px; font-size: 0.85rem; }
@@ -159,103 +156,25 @@ footer a:hover { text-decoration: underline; }
 
   footer { font-size: 11px; gap: 8px; height: 40px; }
 
-  /* ── Pill layer: fixed, full screen between nav & footer ── */
-  #mobile-pill-layer {
-    position: fixed;
-    top: 60px; bottom: 40px; left: 0; right: 0;
-    pointer-events: none;
-    z-index: 5;
+  /* Show the same glass box as desktop, centered, sized for small screens */
+  .glass-container {
+    padding: 10px 20px 60px;
   }
+  .glass-box {
+    width: 85%;
+    max-width: 360px;
+    margin: 0 auto;
+    min-height: 220px;
+    padding: 1.6rem;
+  }
+  .glass-box h2 { font-size: 1.8rem; }
+  .glass-box p { font-size: 1rem; text-align: left; }
+  .button-like { font-size: 1.2rem; }
 
-  /* Each pill is absolutely positioned by JS */
-  .m-pill {
-    position: absolute;
-    pointer-events: all;
-    padding: 0.55rem 1.4rem;
-    border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.45);
-    background: rgba(255,255,255,0.14);
-    backdrop-filter: blur(5px);
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: box-shadow 0.25s ease, background 0.25s ease;
-    user-select: none;
-  }
-  .m-pill:active,
-  .m-pill:hover {
-    background: rgba(255,255,255,0.22);
-    box-shadow: 0 0 14px rgba(255,90,177,0.5);
-  }
-
-  /* Pulse hint animation — draws attention on load */
-  @keyframes pillPulse {
-    0%   { box-shadow: 0 0 0px rgba(255,90,177,0);   transform: scale(1); }
-    50%  { box-shadow: 0 0 16px rgba(255,90,177,0.7); transform: scale(1.08); }
-    100% { box-shadow: 0 0 0px rgba(255,90,177,0);   transform: scale(1); }
-  }
-  .m-pill.pulse {
-    animation: pillPulse 0.7s ease-in-out;
-  }
-
-  /* ── Expanded glass card overlay ── */
+  /* Legacy mobile pill system fully disabled — glass box is shown instead */
+  #mobile-pill-layer,
   #mobile-card-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.25);
-  }
-  #mobile-card-overlay.active { display: flex; }
-
-  .m-card {
-    position: relative;
-    width: 82%;
-    max-width: 310px;
-    background: rgba(255,255,255,0.05);
-    padding: 1.8rem 1.5rem 1.5rem;
-    border-radius: 1.5rem;
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.2);
-    display: flex; flex-direction: column;
-    align-items: center; gap: 0.8rem;
-    animation: cardPop 0.3s ease;
-  }
-  @keyframes cardPop {
-    from { transform: scale(0.85); opacity: 0; }
-    to   { transform: scale(1);    opacity: 1; }
-  }
-
-  .m-card h2 {
-    font-size: 1.8rem; font-weight: 600;
-    text-decoration: underline; text-align: center;
-    margin: 0;
-  }
-  .m-card p {
-    font-size: 1rem; line-height: 1.5;
-    text-align: justify; margin: 0;
-  }
-  .m-card .button-like {
-    font-size: 1.2rem; margin-top: 0.4rem;
-  }
-
-  /* ✕ Close button */
-  .m-close {
-    position: absolute;
-    top: 0.7rem; right: 0.9rem;
-    background: none; border: none;
-    color: white; font-size: 1.4rem;
-    cursor: pointer; line-height: 1;
-    transition: color 0.2s ease, text-shadow 0.2s ease;
-  }
-  .m-close:hover,
-  .m-close:active {
-    color: #ff5ab1;
-    text-shadow: 0 0 8px rgba(255,90,177,0.7);
+    display: none !important;
   }
 }
 
@@ -316,25 +235,12 @@ footer a:hover { text-decoration: underline; }
   <h1 class="headline">Decoding life, one gene at a time!</h1>
 </div>
 
-<!-- DESKTOP glass box (hidden on mobile via CSS) -->
+<!-- Glass box: same markup for desktop AND mobile now -->
 <div class="glass-container">
   <div class="glass-box" id="blog">
     <h2>Blog</h2>
     <p>Tiny reads, Big insights - Bio bytes that fit your coffee break.</p>
     <a class="button-like" onclick="openPopup()"><em>Subscribe</em></a>
-  </div>
-</div>
-
-<!-- MOBILE pill layer (built by JS, invisible on desktop) -->
-<div id="mobile-pill-layer"></div>
-
-<!-- MOBILE expanded card overlay -->
-<div id="mobile-card-overlay">
-  <div class="m-card" id="mobile-card">
-    <button class="m-close" onclick="closeCard()">✕</button>
-    <h2 id="mc-title"></h2>
-    <p id="mc-body"></p>
-    <div id="mc-action"></div>
   </div>
 </div>
 
@@ -383,128 +289,6 @@ function submitEmail() {
     document.querySelector('#subscribe-popup .popup-back').style.display = 'block';
   }
 }
-
-// ══════════════════════════════════════════
-//  MOBILE pill system
-// ══════════════════════════════════════════
-const SECTIONS = [
-  {
-    id: 'blog',
-    title: 'Blog',
-    body: 'Tiny reads, Big genes - Bio bytes that fit your coffee break.',
-    actionLabel: 'Subscribe',
-    actionType: 'popup'
-  }
-];
-
-function isMobile() { return window.innerWidth <= 900; }
-
-function buildPills() {
-  if (!isMobile()) return;
-
-  const layer = document.getElementById('mobile-pill-layer');
-  layer.innerHTML = '';
-
-  // Available area (pill layer is fixed: top 60px, bottom 40px)
-  const areaW = window.innerWidth;
-  const areaH = window.innerHeight - 60 - 40; // total layer height
-
-  // Pill size estimate for collision detection
-  const pillW = 120, pillH = 38, margin = 16;
-  const placed = [];
-
-  function overlaps(x, y) {
-    return placed.some(p =>
-      x < p.x + p.w + margin && x + pillW + margin > p.x &&
-      y < p.y + p.h + margin && y + pillH + margin > p.y
-    );
-  }
-
-  // Single pill (just Blog): center it, matching the centered desktop layout
-  function centerPos() {
-    return { x: (areaW - pillW) / 2, y: (areaH - pillH) / 2 };
-  }
-
-  // Multiple pills: scatter in the BOTTOM TWO-THIRDS of the layer
-  function randomPos() {
-    const zoneTop = areaH / 3;       // top one-third is clear
-    const zoneH   = (areaH * 2) / 3; // bottom two-thirds is the scatter zone
-    const maxX = areaW - pillW - 10;
-    const minY = zoneTop + 10;
-    const maxY = zoneTop + zoneH - pillH - 10;
-    let attempts = 0, x, y;
-    do {
-      x = 10 + Math.random() * (maxX - 10);
-      y = minY + Math.random() * (maxY - minY);
-      attempts++;
-    } while (overlaps(x, y) && attempts < 300);
-    return { x, y };
-  }
-
-  SECTIONS.forEach((sec, i) => {
-    const pill = document.createElement('div');
-    pill.className = 'm-pill';
-    pill.textContent = sec.title;
-    pill.dataset.id = sec.id;
-
-    const pos = SECTIONS.length === 1 ? centerPos() : randomPos();
-    pill.style.left = pos.x + 'px';
-    pill.style.top  = pos.y + 'px';
-    placed.push({ x: pos.x, y: pos.y, w: pillW, h: pillH });
-
-    pill.addEventListener('click', () => expandCard(sec.id));
-    layer.appendChild(pill);
-
-    // Staggered pulse on load to hint interactivity
-    setTimeout(() => {
-      pill.classList.add('pulse');
-      pill.addEventListener('animationend', () => pill.classList.remove('pulse'), { once: true });
-    }, 300 + i * 180);
-  });
-}
-
-function expandCard(id) {
-  const sec = SECTIONS.find(s => s.id === id);
-  if (!sec) return;
-
-  document.getElementById('mc-title').textContent = sec.title;
-  document.getElementById('mc-body').textContent  = sec.body;
-
-  const actionEl = document.getElementById('mc-action');
-  actionEl.innerHTML = '';
-
-  if (sec.actionType === 'popup') {
-    const btn = document.createElement('a');
-    btn.className = 'button-like';
-    btn.innerHTML = '<em>' + sec.actionLabel + '</em>';
-    btn.onclick = openPopup;
-    actionEl.appendChild(btn);
-  } else {
-    const btn = document.createElement('a');
-    btn.className = 'button-like';
-    btn.href = sec.actionHref || '#';
-    btn.innerHTML = '<em>' + sec.actionLabel + '</em>';
-    actionEl.appendChild(btn);
-  }
-
-  // Hide all pills
-  document.querySelectorAll('.m-pill').forEach(p => p.style.display = 'none');
-
-  // Show overlay
-  document.getElementById('mobile-card-overlay').classList.add('active');
-}
-
-function closeCard() {
-  document.getElementById('mobile-card-overlay').classList.remove('active');
-  // Restore all pills
-  document.querySelectorAll('.m-pill').forEach(p => p.style.display = '');
-}
-
-// Init on load & resize
-if (isMobile()) buildPills();
-window.addEventListener('resize', () => {
-  if (isMobile()) buildPills();
-});
 </script>
 
 </body>
