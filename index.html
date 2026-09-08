@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Morigene Landing Page</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+
+<style>
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  height: 100%;
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: white;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: opacity 0.4s ease;
+}
+body.fade-out { opacity: 0; }
+
+/* Video background */
+#bg-video {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  filter: brightness(0.6);
+  transition: transform 0.2s ease-out;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0; width: 100%; height: 60px;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 10;
+}
+.navbar .logo {
+  display: flex; flex-direction: column;
+  align-items: center; line-height: 1;
+}
+.navbar .logo .main-text { font-weight: 600; font-size: clamp(1.5rem, 2.5vw, 1.9rem); }
+.navbar .logo .sub-text { font-style: italic; font-size: clamp(0.75rem, 1.25vw, 0.95rem); margin-top: -2px; }
+
+/* Navbar Menu */
+.navbar-menu { list-style: none; display: flex; gap: 20px; }
+.navbar-menu li { position: relative; }
+.navbar-menu li a { color: white; text-decoration: underline; font-weight: 500; position: relative; }
+.navbar-menu li a:hover { color: #ff5ab1; }
+
+/* Tooltip for Individual */
+@keyframes softGlow {
+  0%   { box-shadow: 0 0 10px rgba(255,255,255,0.15); }
+  50%  { box-shadow: 0 0 20px rgba(255,90,177,0.35); }
+  100% { box-shadow: 0 0 10px rgba(255,255,255,0.15); }
+}
+.navbar-menu li a[href="#individual"]::after {
+  content: "Your wellness, your way!\A Personalized health plans,\A Powered by your DNA.\A - Coming soon -";
+  position: absolute; left: 50%; top: 135%;
+  transform: translateX(-50%);
+  max-width: 320px; padding: 12px 16px;
+  font-size: 0.85rem; line-height: 1.6;
+  text-align: center; white-space: pre-line; color: white;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 14px; backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none; z-index: 20;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.navbar-menu li a[href="#individual"]:hover::after,
+.navbar-menu li a[href="#individual"]:focus::after,
+.navbar-menu li a[href="#individual"]:active::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(6px);
+  animation: softGlow 2.5s ease-in-out infinite;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+.mobile-menu-toggle span { width: 25px; height: 3px; background: white; border-radius: 2px; }
+
+/* Mobile menu overlay */
+#mobileMenu {
+  display: none; position: fixed; top: 60px; left: 0;
+  width: 100%; height: calc(100vh - 60px);
+  background: rgba(0,0,0,0.28);
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 25px; z-index: 15;
+}
+#mobileMenu a {
+  color: white; font-weight: bold; font-size: 1.6rem;
+  text-decoration: underline; padding: 0.6rem 1.5rem;
+  border-radius: 50px; border: 1px solid rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(4px);
+}
+#mobileMenu a:hover { color: #ff5ab1; }
+
+/* Hero */
+.container {
+  position: relative; width: 100%;
+  text-align: center; padding: 20px; top: 70px;
+}
+.headline {
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-style: italic; margin-bottom: 80px;
+}
+
+/* ── DESKTOP Glass Boxes ── */
+.glass-container {
+  position: relative; width: 100%; max-width: 1200px;
+  margin: 0 auto; display: flex;
+  justify-content: center; gap: 40px; padding: 20px; flex-wrap: wrap;
+}
+.glass-box {
+  width: 29.25%; margin: 0 20px;
+  background: rgba(255,255,255,0.05);
+  min-height: 260px; padding: 2rem; border-radius: 1.5rem;
+  backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.2);
+  display: flex; flex-direction: column;
+  justify-content: space-between; align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-box h2 {
+  font-size: clamp(1.8rem, 2.5vw, 2.2rem);
+  margin-top: 0; margin-bottom: 1rem;
+  font-weight: 600; text-decoration: underline; text-align: center;
+}
+.glass-box p {
+  font-size: clamp(1rem, 1.2vw, 1.1rem);
+  line-height: 1.5; text-align: justify; flex-grow: 1;
+}
+.button-like {
+  display: block; width: 100%; padding: 0.8rem 0;
+  border-radius: 50px; border: 1px solid rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.22); color: white;
+  backdrop-filter: blur(6px); text-decoration: none;
+  cursor: pointer; font-size: 1.5rem; text-align: center;
+  transition: transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 20px;
+}
+.button-like:hover {
+  transform: translateY(-3px) scale(1.03);
+  color: #ff5ab1; box-shadow: 0 0 20px rgba(255,90,177,0.6);
+}
+.button-like:hover em { font-weight: 700; color: white; text-shadow: 0 0 8px rgba(255,255,255,0.8); }
+
+/* Footer */
+footer {
+  background: rgba(0,0,0,0.35); color: white;
+  text-align: center; font-size: 14px;
+  position: fixed; bottom: 0; width: 100%;
+  display: flex; justify-content: center; gap: 15px;
+  align-items: center; height: 45px; padding: 0 10px; flex-wrap: wrap;
+}
+footer a { color: white; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* Hover tilt — desktop only */
+@media (min-width: 901px) {
+  .glass-box:hover { transform: perspective(600px) rotateX(3deg) rotateY(-3deg); }
+  .mobile-only { display: none; }
+}
+
+/* ══════════════════════════════════════════
+   MOBILE  ≤ 900px  — pills + expand system
+   ══════════════════════════════════════════ */
+@media (max-width: 900px) {
+
+  html, body { overflow: hidden; height: 100%; }
+
+  /* Hide desktop glass container completely */
+  .glass-container { display: none; }
+
+  /* Navbar: About only */
+  .navbar-menu li:not(:first-child) { display: none; }
+  .navbar-menu { gap: 10px; font-size: 0.85rem; }
+  .mobile-menu-toggle { display: none; }
+
+  footer { font-size: 11px; gap: 8px; height: 40px; }
+
+  /* ── Pill layer: fixed, full screen between nav & footer ── */
+  #mobile-pill-layer {
+    position: fixed;
+    top: 60px; bottom: 40px; left: 0; right: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* Each pill is absolutely positioned by JS */
+  .m-pill {
+    position: absolute;
+    pointer-events: all;
+    padding: 0.55rem 1.4rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(5px);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: box-shadow 0.25s ease, background 0.25s ease;
+    user-select: none;
+  }
+  .m-pill:active,
+  .m-pill:hover {
+    background: rgba(255,255,255,0.22);
+    box-shadow: 0 0 14px rgba(255,90,177,0.5);
+  }
+
+  /* Pulse hint animation — draws attention on load */
+  @keyframes pillPulse {
+    0%   { box-shadow: 0 0 0px rgba(255,90,177,0);   transform: scale(1); }
+    50%  { box-shadow: 0 0 16px rgba(255,90,177,0.7); transform: scale(1.08); }
+    100% { box-shadow: 0 0 0px rgba(255,90,177,0);   transform: scale(1); }
+  }
+  .m-pill.pulse {
+    animation: pillPulse 0.7s ease-in-out;
+  }
+
+  /* ── Expanded glass card overlay ── */
+  #mobile-card-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.25);
+  }
+  #mobile-card-overlay.active { display: flex; }
+
+  .m-card {
+    position: relative;
+    width: 82%;
+    max-width: 310px;
+    background: rgba(255,255,255,0.05);
+    padding: 1.8rem 1.5rem 1.5rem;
+    border-radius: 1.5rem;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0.8rem;
+    animation: cardPop 0.3s ease;
+  }
+  @keyframes cardPop {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+
+  .m-card h2 {
+    font-size: 1.8rem; font-weight: 600;
+    text-decoration: underline; text-align: center;
+    margin: 0;
+  }
+  .m-card p {
+    font-size: 1rem; line-height: 1.5;
+    text-align: justify; margin: 0;
+  }
+  .m-card .button-like {
+    font-size: 1.2rem; margin-top: 0.4rem;
+  }
+
+  /* ✕ Close button */
+  .m-close {
+    position: absolute;
+    top: 0.7rem; right: 0.9rem;
+    background: none; border: none;
+    color: white; font-size: 1.4rem;
+    cursor: pointer; line-height: 1;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+  }
+  .m-close:hover,
+  .m-close:active {
+    color: #ff5ab1;
+    text-shadow: 0 0 8px rgba(255,90,177,0.7);
+  }
+
+  /* tooltip tweak */
+  .navbar-menu li a[href="#individual"]::after {
+    max-width: 260px; font-size: 0.8rem;
+  }
+}
+
+/* Subscribe Popup */
+#subscribe-popup {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: none; justify-content: center; align-items: center; z-index: 999;
+}
+#subscribe-popup .popup-content {
+  background: rgba(255,255,255,0.05); backdrop-filter: blur(6px);
+  padding: 2rem; border-radius: 1.5rem;
+  display: flex; flex-direction: column; align-items: center;
+  max-width: 320px; width: 80%;
+}
+#subscribe-popup input[type="email"] {
+  width: 100%; padding: 0.9rem; font-size: 1rem;
+  border-radius: 50px; border: 1px solid rgba(255,255,255,0.4);
+  margin-bottom: 1rem; outline: none; text-align: center;
+}
+#subscribe-popup button {
+  padding: 0.85rem 2rem; border-radius: 50px; border: none;
+  background: linear-gradient(135deg, rgba(255,91,177,0.6), rgba(255,91,177,0.3));
+  color: white; font-weight: 600; cursor: pointer;
+}
+#subscribe-popup .thankyou-message {
+  display: none; text-align: center; color: white;
+  margin-bottom: 1rem; font-size: 1rem; line-height: 1.4;
+}
+#subscribe-popup .popup-back {
+  padding: 0.6rem 1.8rem; border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.2); color: white; cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<video autoplay muted loop playsinline id="bg-video">
+  <source src="videos/background.mp4" type="video/mp4" />
+</video>
+
+<nav class="navbar">
+  <div class="logo">
+    <span class="main-text">MORIGENE</span>
+    <span class="sub-text">by Tabe-i Ltd</span>
+  </div>
+  <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <ul class="navbar-menu">
+    <li><a href="About.html" class="About-link">About</a></li>
+    <li><a href="#individual">Individual</a></li>
+    <li><a href="corporate.html" class="corporate-link">Corporate</a></li>
+  </ul>
+</nav>
+
+<div class="container" id="about">
+  <h1 class="headline">Decoding life, one gene at a time!</h1>
+</div>
+
+<!-- DESKTOP glass boxes (hidden on mobile via CSS) -->
+<div class="glass-container">
+  <div class="glass-box" id="blog">
+    <h2>Blog</h2>
+    <p>Tiny reads, Big genes - Bio bytes that fit your coffee break.</p>
+    <a class="button-like" onclick="openPopup()"><em>Subscribe</em></a>
+  </div>
+  <div class="glass-box" id="courses">
+    <h2>Courses</h2>
+    <p>Learn Bioinformatics with hands-on practice.</p>
+    <a class="button-like" href="#"><em>Coming Soon</em></a>
+  </div>
+  <div class="glass-box mobile-only" id="individual-mobile">
+    <h2>Individual</h2>
+    <p>Your Wellness, your way! Personalized health plans powered by your DNA.</p>
+    <a class="button-like" href="#"><em>Coming soon</em></a>
+  </div>
+  <div class="glass-box mobile-only" id="corporate-mobile">
+    <h2>Corporate</h2>
+    <p>Your genomic data, our professional care. Outsourcing made simple!</p>
+    <a class="button-like corporate-link" href="corporate.html"><em>Learn More</em></a>
+  </div>
+</div>
+
+<!-- MOBILE pill layer (built by JS, invisible on desktop) -->
+<div id="mobile-pill-layer"></div>
+
+<!-- MOBILE expanded card overlay -->
+<div id="mobile-card-overlay">
+  <div class="m-card" id="mobile-card">
+    <button class="m-close" onclick="closeCard()">✕</button>
+    <h2 id="mc-title"></h2>
+    <p id="mc-body"></p>
+    <div id="mc-action"></div>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Morigene.ai — All rights reserved.</span>
+  <a href="privacy-policy.html">Privacy Policy</a>
+  <a href="terms&conditions.html">Terms & Conditions</a>
+  <a href="contact-form.html">Contact</a>
+  <a href="https://wa.me/23059119191" target="_blank" rel="noopener">
+    <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" width="20" height="20"/>
+  </a>
+</footer>
+
+<!-- Subscribe Popup -->
+<div id="subscribe-popup">
+  <div class="popup-content">
+    <input type="email" id="subscriber-email" placeholder="Enter your email" required>
+    <button onclick="submitEmail()">OK</button>
+    <div class="thankyou-message">
+      Thank you for subscribing!<br>
+      Get ready for monthly updates!
+    </div>
+    <button class="popup-back" onclick="closePopup()" style="display:none;">Ok</button>
+  </div>
+</div>
+
+<script>
+// ── Desktop: smooth corporate transition ──
+document.querySelectorAll('.corporate-link').forEach(link => {
+  link.addEventListener('click', function(e){
+    e.preventDefault();
+    document.body.classList.add('fade-out');
+    setTimeout(() => { window.location.href = this.href; }, 350);
+  });
+});
+
+// Mobile menu toggle (kept for safety)
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  if (menu) menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
+// ── Subscribe popup ──
+function openPopup() {
+  document.getElementById('subscribe-popup').style.display = 'flex';
+}
+function closePopup() {
+  document.getElementById('subscribe-popup').style.display = 'none';
+}
+function submitEmail() {
+  const input = document.getElementById('subscriber-email');
+  if (input.value.trim() !== '') {
+    document.querySelector('#subscribe-popup .thankyou-message').style.display = 'block';
+    input.style.display = 'none';
+    document.querySelector('#subscribe-popup button').style.display = 'none';
+    document.querySelector('#subscribe-popup .popup-back').style.display = 'block';
+  }
+}
+
+// ══════════════════════════════════════════
+//  MOBILE pill system
+// ══════════════════════════════════════════
+const SECTIONS = [
+  {
+    id: 'blog',
+    title: 'Blog',
+    body: 'Tiny reads, Big genes - Bio bytes that fit your coffee break.',
+    actionLabel: 'Subscribe',
+    actionType: 'popup'
+  },
+  {
+    id: 'courses',
+    title: 'Courses',
+    body: 'Learn Bioinformatics with hands-on practice.',
+    actionLabel: 'Coming Soon',
+    actionType: 'link',
+    actionHref: '#'
+  },
+  {
+    id: 'individual',
+    title: 'Individual',
+    body: 'Your Wellness, your way! Personalized health plans powered by your DNA.',
+    actionLabel: 'Coming Soon',
+    actionType: 'link',
+    actionHref: '#'
+  },
+  {
+    id: 'corporate',
+    title: 'Corporate',
+    body: 'Your genomic data, our professional care. Outsourcing made simple!',
+    actionLabel: 'Learn More',
+    actionType: 'corporate',
+    actionHref: 'corporate.html'
+  }
+];
+
+function isMobile() { return window.innerWidth <= 900; }
+
+function buildPills() {
+  if (!isMobile()) return;
+
+  const layer = document.getElementById('mobile-pill-layer');
+  layer.innerHTML = '';
+
+  // Available area (pill layer is fixed: top 60px, bottom 40px)
+  const areaW = window.innerWidth;
+  const areaH = window.innerHeight - 60 - 40; // total layer height
+
+  // Pills scatter in the BOTTOM TWO-THIRDS of the layer
+  const zoneTop = areaH / 3;       // top one-third is clear
+  const zoneH   = (areaH * 2) / 3; // bottom two-thirds is the scatter zone
+
+  // Pill size estimate for collision detection
+  const pillW = 120, pillH = 38, margin = 16;
+  const placed = [];
+
+  function overlaps(x, y) {
+    return placed.some(p =>
+      x < p.x + p.w + margin && x + pillW + margin > p.x &&
+      y < p.y + p.h + margin && y + pillH + margin > p.y
+    );
+  }
+
+  function randomPos() {
+    const maxX = areaW - pillW - 10;
+    const minY = zoneTop + 10;
+    const maxY = zoneTop + zoneH - pillH - 10;
+    let attempts = 0, x, y;
+    do {
+      x = 10 + Math.random() * (maxX - 10);
+      y = minY + Math.random() * (maxY - minY);
+      attempts++;
+    } while (overlaps(x, y) && attempts < 300);
+    return { x, y };
+  }
+
+  SECTIONS.forEach((sec, i) => {
+    const pill = document.createElement('div');
+    pill.className = 'm-pill';
+    pill.textContent = sec.title;
+    pill.dataset.id = sec.id;
+
+    const pos = randomPos();
+    pill.style.left = pos.x + 'px';
+    pill.style.top  = pos.y + 'px';
+    placed.push({ x: pos.x, y: pos.y, w: pillW, h: pillH });
+
+    pill.addEventListener('click', () => expandCard(sec.id));
+    layer.appendChild(pill);
+
+    // Staggered pulse on load to hint interactivity
+    setTimeout(() => {
+      pill.classList.add('pulse');
+      pill.addEventListener('animationend', () => pill.classList.remove('pulse'), { once: true });
+    }, 300 + i * 180);
+  });
+}
+
+function expandCard(id) {
+  const sec = SECTIONS.find(s => s.id === id);
+  if (!sec) return;
+
+  document.getElementById('mc-title').textContent = sec.title;
+  document.getElementById('mc-body').textContent  = sec.body;
+
+  const actionEl = document.getElementById('mc-action');
+  actionEl.innerHTML = '';
+
+  if (sec.actionType === 'popup') {
+    const btn = document.createElement('a');
+    btn.className = 'button-like';
+    btn.innerHTML = '<em>' + sec.actionLabel + '</em>';
+    btn.onclick = openPopup;
+    actionEl.appendChild(btn);
+  } else if (sec.actionType === 'corporate') {
+    const btn = document.createElement('a');
+    btn.className = 'button-like corporate-link';
+    btn.href = sec.actionHref;
+    btn.innerHTML = '<em>' + sec.actionLabel + '</em>';
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      document.body.classList.add('fade-out');
+      setTimeout(() => { window.location.href = sec.actionHref; }, 350);
+    });
+    actionEl.appendChild(btn);
+  } else {
+    const btn = document.createElement('a');
+    btn.className = 'button-like';
+    btn.href = sec.actionHref || '#';
+    btn.innerHTML = '<em>' + sec.actionLabel + '</em>';
+    actionEl.appendChild(btn);
+  }
+
+  // Hide all pills
+  document.querySelectorAll('.m-pill').forEach(p => p.style.display = 'none');
+
+  // Show overlay
+  document.getElementById('mobile-card-overlay').classList.add('active');
+}
+
+function closeCard() {
+  document.getElementById('mobile-card-overlay').classList.remove('active');
+  // Restore all pills
+  document.querySelectorAll('.m-pill').forEach(p => p.style.display = '');
+}
+
+// Init on load & resize
+if (isMobile()) buildPills();
+window.addEventListener('resize', () => {
+  if (isMobile()) buildPills();
+});
+</script>
+
+</body>
+</html>
